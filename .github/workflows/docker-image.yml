@@ -21,4 +21,4 @@ jobs:
       env:
         super-secret: ${{ secrets.MYSECRET }}
       run: |
-        echo "hello we want to see the super secret: $super-secret" 
+        echo "hello we want to see the super secret: ${super-secret}" 
