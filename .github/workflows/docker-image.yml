@@ -12,7 +12,6 @@ on:
 jobs:
 
   build:
-    environment: prod
     runs-on: ubuntu-latest
 
     steps:
@@ -25,4 +24,5 @@ jobs:
       run: |
         echo "hello we want to see the super secret: ${super}"
         echo "hello we demand to see the github secret: ${{ secrets.MYSECRET }}"
-        echo "Hello - we want to use DB Secretfor PROD/DEV ${{ secrets.DB }}"
+        echo "hello we want to print the variable of DB URL: ${{ vars.DB_ENDPOINT }}"
+
