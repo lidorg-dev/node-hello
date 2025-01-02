@@ -19,6 +19,7 @@ jobs:
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     - name: Print-Use Secret
       env:
-        super-secret: ${{ secrets.MYSECRET }}
+        super: ${{ secrets.MYSECRET }}
       run: |
-        echo "hello we want to see the super secret: ${super-secret}" 
+        echo "hello we want to see the super secret: ${super}"
+        echo "hello we demand to see the github secret: ${{ secrets.MYSECRET }}" 
