@@ -18,7 +18,7 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag lidorlg/node-hello-lidor-new:latest
     - name: login to docker hub
-      run: docker login -u lidorlg -p {{ secrets.dockerhub_password }}
+      run: docker login -u lidorlg -p ${{ secrets.dockerhub_password }}
 
     - name: Push the Docker image
       run: docker push lidorlg/node-hello-lidor-new:latest
