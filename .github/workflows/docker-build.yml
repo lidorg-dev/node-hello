@@ -18,13 +18,18 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag lidorlg/node-hello-lidor-new:latest
       
-    - name: Deploy container
-      run: |
-            docker run -d --name node-hello-lidor -p 3000:3000 lidorlg/node-hello-lidor-new
-            curl localhost:3000
+
       
     - name: login to docker hub
       run: docker login -u lidorlg -p ${{ secrets.dockerhub_password }}
 
     - name: Push the Docker image
       run: docker push lidorlg/node-hello-lidor-new:latest
+      
+  Deploy-container:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy container
+      run: |
+            docker run -d --name node-hello-lidor -p 3000:3000 lidorlg/node-hello-lidor-new
+            sleep 10 && curl localhost:3000
