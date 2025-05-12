@@ -27,6 +27,7 @@ jobs:
       run: docker push lidorlg/node-hello-lidor-new:latest
       
   Deploy-container:
+    needs: Build-Push
     runs-on: ubuntu-latest
     steps:
     - name: Deploy container
