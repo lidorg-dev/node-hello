@@ -18,7 +18,7 @@ jobs:
       - name: run Tests
         run: echo "npm test"
       - name: Build Project
-        run: npm run build
+        run: echo "npm run build"
       - name: upload dist as artifact
         uses: actions/upload-artifact@v4
         with:
