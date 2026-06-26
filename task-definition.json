@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "node-demo",
-            "image": "lidorlg/lidor-node-devops-sce:1",
+            "image": "",
             "cpu": 0,
             "portMappings": [
                 {
