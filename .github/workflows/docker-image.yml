@@ -19,5 +19,5 @@ jobs:
     - name: login and push to docker hub
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-        docker push idorlg/lidor-node-devops-sce:latest-5
+        docker push lidorlg/lidor-node-devops-sce:latest-5
       
