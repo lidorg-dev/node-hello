@@ -46,8 +46,5 @@ jobs:
         cluster: lidor-demo-azrieli
         # The name of the container
         container-name: node-demo
-        # Whether to wait for service stability after deploying
-        wait-for-service-stability: # optional
-        # Whether to deploy the service or not
         force-new-deployment: true
           
