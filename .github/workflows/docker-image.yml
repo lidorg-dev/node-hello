@@ -31,20 +31,20 @@ jobs:
         aws-access-key-id: ${{ secrets.ACCESS_KEY }}
         # AWS Secret Access Key. Required if aws-access-key-id is provided.
         aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-
+        
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: node-demo
+        image: lidorlg/lidor-node-devops-sce:latest-5
     
     - name: deploy the new image to ecs
-      uses: jsmrcaga/action-update-aws-taskdef@v0.0.4
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
       with:
-        # The new image url:tag
-        image: lidorlg/lidor-node-devops-sce:latest-5
-        # The task definition family
-        family: node-demo-azrieli
-        # The service to which deploy the task def
+        task-definition: task-definition.json
         service: node-demo-azrieli-service-b553awup
-        # The cluster the task def resides in
         cluster: lidor-demo-azrieli
-        # The name of the container
-        container-name: node-demo
-        force-new-deployment: true
+        wait-for-service-stability: true
           
