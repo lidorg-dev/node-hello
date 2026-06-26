@@ -31,33 +31,48 @@ jobs:
         aws-access-key-id: ${{ secrets.ACCESS_KEY }}
         # AWS Secret Access Key. Required if aws-access-key-id is provided.
         aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-    
-        # Step 5.1: Download current ECS task definition
-    - name: Download current task definition
+
+    - name: deploy to ecs
       run: |
-        aws ecs describe-task-definition \
-          --task-definition node-demo-azrieli \
-          --query taskDefinition > task-definition.json
+        TASK_DEF=$(aws ecs describe-task-definition --task-definition "node-demo-azrieli")
+        NEW_TASK_DEF=$(echo "$TASK_DEF" | jq '.taskDefinition | .containerDefinitions[0].image = "lidorlg/lidor-node-devops-sce:5" | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+
+        # 2. Register New Revision
+        NEW_TASK_INFO=$(aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF")
+        
+        # 3. Update Service to use new revision
+        aws ecs update-service --cluster "lidor-demo-azrieli" --service "node-demo-azrieli-service-b553awup" --task-definition "node-demo-azrieli"
+                
+
+
+
+
+    # Step 5.1: Download current ECS task definition
+    # - name: Download current task definition
+    #   run: |
+    #     aws ecs describe-task-definition \
+    #       --task-definition node-demo-azrieli \
+    #       --query taskDefinition > task-definition.json
     
-    # Step 5.2: Clean the task definition by removing metadata
-    - name: Clean task definition
-      run: |
-        jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .deregisteredAt, .registeredBy, .enableFaultInjection)' task-definition.json > cleaned-task-definition.json
-        mv cleaned-task-definition.json task-definition.json
+    # # Step 5.2: Clean the task definition by removing metadata
+    # - name: Clean task definition
+    #   run: |
+    #     jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .deregisteredAt, .registeredBy, .enableFaultInjection)' task-definition.json > cleaned-task-definition.json
+    #     mv cleaned-task-definition.json task-definition.json
     
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: task-definition.json
-        container-name: node-demo
-        image: lidorlg/lidor-node-devops-sce:5
+    # - name: Fill in the new image ID in the Amazon ECS task definition
+    #   id: task-def
+    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+    #   with:
+    #     task-definition: task-definition.json
+    #     container-name: node-demo
+    #     image: lidorlg/lidor-node-devops-sce:5
     
-    - name: deploy the new image to ecs
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-      with:
-        task-definition: task-definition.json
-        service: node-demo-azrieli-service-b553awup
-        cluster: lidor-demo-azrieli
-        wait-for-service-stability: true
+    # - name: deploy the new image to ecs
+    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+    #   with:
+    #     task-definition: task-definition.json
+    #     service: node-demo-azrieli-service-b553awup
+    #     cluster: lidor-demo-azrieli
+    #     wait-for-service-stability: true
           
