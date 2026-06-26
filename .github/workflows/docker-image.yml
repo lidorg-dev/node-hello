@@ -20,4 +20,33 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker push lidorlg/lidor-node-devops-sce:latest-5
-      
+    - name: login to AWS
+      uses: aws-actions/configure-aws-credentials@v6.2.0
+      with:
+        # AWS Region, e.g. us-east-2
+        aws-region: us-east-1
+
+        # AWS Access Key ID. Provide this key if you want to assume a role using access keys rather than a web identity token.
+        aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+        # AWS Secret Access Key. Required if aws-access-key-id is provided.
+        aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+
+    
+    - name: deploy the new image to ecs
+      uses: jsmrcaga/action-update-aws-taskdef@v0.0.4
+      with:
+        # The new image url:tag
+        image: lidorlg/lidor-node-devops-sce:latest-5
+        # The task definition family
+        family: node-demo-azrieli
+        # The service to which deploy the task def
+        service: node-demo-azrieli-service-b553awup
+        # The cluster the task def resides in
+        cluster: lidor-demo-azrieli
+        # The name of the container
+        container-name: node-demo
+        # Whether to wait for service stability after deploying
+        wait-for-service-stability: # optional
+        # Whether to deploy the service or not
+        force-new-deployment: true
+          
